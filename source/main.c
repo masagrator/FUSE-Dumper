@@ -27,30 +27,22 @@ int main(int argc, char* argv[])
 	printf("Searching for \"usb\" sysmodule...\n");
 	consoleUpdate(NULL);
 
-	s32 num;
-	u64* pids = malloc(0x100 * sizeof(u64));
-	svcGetProcessList(&num, pids, 0x100);
-	pminfoInitialize();
-
-	int pid = -1;
-	for (u32 i = 0; i < num; i++) {
-		u64 tid = 0;
-		pminfoGetProgramId(&tid, pids[i]);
-		if (tid == 0x0100000000000006) {
-			pid = pids[i];
-			break;
-		}
+	u64 pid = 0;
+	Result rc = pmdmntInitialize();
+	if (R_SUCCEEDED(rc)) {
+		rc = pmdmntGetProcessId(&pid, 0x0100000000000006);
+		pmdmntExit();
 	}
-	pminfoExit();
 
-	if (pid == -1) {
+	if (R_FAILED(rc)) {
 		printf(CONSOLE_RED "\"usb\" not found...\n");
 	}
-	else printf("\"usb\" found, PID: %d\n", pid);
+	else printf("\"usb\" found, PID: %ld\n", pid);
 	consoleUpdate(NULL);
 
+
 	Handle debug;
-	Result rc = svcDebugActiveProcess(&debug, pid);
+	rc = svcDebugActiveProcess(&debug, pid);
 	if (R_FAILED(rc)) {
 		printf(CONSOLE_RED "Couldn't debug \"usb\" process, err: 0x%x\n", rc);
 		goto loop;
