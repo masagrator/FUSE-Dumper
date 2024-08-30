@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 		if (R_FAILED(rc)) {
 			printf(CONSOLE_RED "Couldn't retrieve process memory info, err: 0x%x\n", rc);
 			svcCloseHandle(debug);
-			goto loop;
+			break;
 		}
 		if (mem_info.type == MemType_Io && mem_info.size == 0x1000) {
 			char stack[0x10] = "";
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 			if (R_FAILED(rc)) {
 				printf(CONSOLE_RED "Couldn't retrieve IO data, err: 0x%x\n", rc);
 				svcCloseHandle(debug);
-				goto loop;				
+				break;				
 			}
 			if (!memcmp(stack, compare, 0x10)) {
 				printf("Found IO region...\n");
@@ -88,12 +88,12 @@ int main(int argc, char* argv[])
 				svcCloseHandle(debug);
 				if (R_FAILED(rc)) {
 					printf(CONSOLE_RED "Couldn't retrieve FUSE data, err: 0x%x\n", rc);
-					goto loop;				
+					break;			
 				}
 				FILE* file = fopen("sdmc:/fuse_dump.bin", "wb");
 				if (!file) {
 					printf(CONSOLE_RED "Couldn't open for writing \"fuse_dump.bin\"...\n");
-					goto loop;						
+					break;				
 				}
 				fwrite((void*)dump, 0x400, 1, file);
 				fclose(file);
