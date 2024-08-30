@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
 
 	if (R_FAILED(rc)) {
 		printf(CONSOLE_RED "\"usb\" not found...\n");
+		goto loop;
 	}
 	else printf("\"usb\" found, PID: %ld\n", pid);
 	consoleUpdate(NULL);
