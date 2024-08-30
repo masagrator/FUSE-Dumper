@@ -1,5 +1,5 @@
 # FUSE-Dumper
-Nintendo Swtich homebrew dumping FUSE to sdcard.
+Nintendo Switch homebrew dumping FUSE to sdcard.
 
 FUSE dumping is achieved by putting "usb" sysmodule into debug state and finding FUSE IO region mapped by this sysmodule.
 
